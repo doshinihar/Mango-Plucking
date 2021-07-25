@@ -1,124 +1,50 @@
+
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
-const Constraint=Matter.Constraint;
-
-
-var boy,boy_img;
-var ground1;
-var tree1,tree_img;
-var stone1;
-var mango1,mango2,mango3,mango4,mango5,mango6;
-var thread;
+const Constraint = Matter.Constraint;
+var boy,ground,rock,tree,m1,m2,m3,m4,m5,m6,m7,chain;
 
 function preload()
 {
-  boy_img=loadImage("boy.png");
-  tree_img=loadImage("tree.png")
+	boy = loadImage("boy.png");
+	tree = loadImage("tree.png");
+	backgroundImg = loadImage("bg.png");
 }
 
 function setup() {
-  createCanvas(1200,400);
- 
-  engine = Engine.create();
-  world = engine.world;
+	createCanvas(1280, 400);
 
-  boy=Matter.Bodies.rectangle(260,350,10,10);
 
-  ground1=new ground(400,390,800,10);
+	engine = Engine.create();
+	world = engine.world;
 
-  tree1= new tree(660,300,60,165);
-
-  stone1=new stone(150,300,20,20);
-
-  mango1=new mango(900,850,8);
-  mango2=new mango(570,120,9);
-  mango3=new mango(610,150,8);
-  mango4=new mango(640,90,7);
-  mango5=new mango(660,100,8);
-  mango6=new mango(690,850,9);
-  mango7=new mango(735,650,7);
-  mango8=new mango(765,700,8);
-  
-
-  thread=new constraint(stone1.body,{x:230,y:315});
-
-  function mouseDragged(){
+	//Create the Bodies Here.
+	rock = new stone(320,225);
+	chain = new SlingShot(rock.body,{x:320 , y:225});
+	m1 = new mango(900,150,8);
+	m2 = new mango(950,120,10);
+	m3 = new mango(1000,100,7);
+	m4 = new mango(950,60,9);
+	m5 = new mango(1050,60,6);
+	m6 = new mango(1100,120,10);
+	ground = Bodies.rectangle(640,385,1290,20,{isStatic:true});
+	World.add(world,ground);
+	
+	Engine.run(engine);
+	  
+}
+function mouseDragged(){
     Matter.Body.setPosition(rock.body,{x:mouseX,y:mouseY});
 }
-
 function mouseReleased(){
-  chain.fly();
+    chain.fly();
 }
-  
-}
+
 
 function draw() {
-  background("lightgrey");  
-
-  Engine.update(engine);
-  
- 
-  imageMode(CENTER);
-  image(boy_img,boy.position.x,boy.position.y,100,150);
-
-  tree1.display();
-
-  ground1.display();
-
-  imageMode(CENTER);
-  image(tree_img,650,220,300,350);
-
-  stone1.display();
-
-  
-  mango1.display();
-  mango2.display();
-  mango3.display();
-  mango4.display();
-  mango5.display();
-  mango6.display();
-  mango7.display();
-  mango8.display();
-  
-  thread.display();
-
-  
-
-
-  detectCollision(stone1,mango1);
-  detectCollision(stone1,mango2);
-  detectCollision(stone1,mango3);
-  detectCollision(stone1,mango4);
-  detectCollision(stone1,mango5);
-  detectCollision(stone1,mango6);
-  detectCollision(stone1,mango7);
-  detectCollision(stone1,mango8);
-  fill("black")
-  textSize(15);
-  text("Press Space to get a second chance to play",40,40);
-}
-
-function mouseDragged()
-{
-  Matter.Body.setPosition(stone1.body,{x:mouseX,y:mouseY});
-}
-
-function mouseReleased()
-{
-  thread.fly();
-}
-
-function keyPressed()
-{
-  if(keyCode===32)
-  {
-    Matter.Body.setPosition(stone1.body,{x:140,y:315});
-    thread.attacher(stone1.body);
-  }
-
-  if (keyIsPressed === true) {
+	if (keyIsPressed === true) {
 		chain.attach();
 	  }
 
@@ -127,4 +53,34 @@ function keyPressed()
     push();
     rect(width/2,400,width,20);
 	chain.display();
+    drawSprites();
+    console.log(rock);
+    imageMode(CENTER);
+    image(boy,400,300,250,300);
+	image(tree,1000,180,400,400);
+	rock.display();
+	m1.display();
+	m2.display();
+	m3.display();
+	m4.display();
+	m5.display();
+	m6.display();
+	collision(rock,m1);
+	collision(rock,m2);
+	collision(rock,m3);
+	collision(rock,m4);
+	collision(rock,m5);
+	collision(rock,m6);
+
+	strokeWeight(3);
+	stroke(0);
+	fill(255);
+    text('Let us Pluck the Mangoes !😋', 285, 22);
+	
+}
+function collision(a,b){
+	var d = dist(a.body.position.x,a.body.position.y,b.body.position.x,b.body.position.y)
+	if(d <= 50){
+		Body.setStatic(b.body,false);
+	}
 }
